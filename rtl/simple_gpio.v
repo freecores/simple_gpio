@@ -34,13 +34,16 @@
 
 //  CVS Log
 //
-//  $Id: simple_gpio.v,v 1.1.1.1 2002-12-02 17:19:34 rherveille Exp $
+//  $Id: simple_gpio.v,v 1.2 2002-12-22 16:10:17 rherveille Exp $
 //
-//  $Date: 2002-12-02 17:19:34 $
-//  $Revision: 1.1.1.1 $
+//  $Date: 2002-12-22 16:10:17 $
+//  $Revision: 1.2 $
 //  $Author: rherveille $
 //  $Locker:  $
 //  $State: Exp $
+//
+// Change History:
+//               $Log: not supported by cvs2svn $
 //
 
 
@@ -54,7 +57,7 @@
 // 0x00: Control Register   <io[7:0]>
 //       bits 7:0 R/W Input/Output    '1' = output mode
 //                                    '0' = input mode
-// 0x02: Line Register
+// 0x01: Line Register
 //       bits 7:0 R   Status                Current GPIO pin level
 //                W   Output                GPIO pin output level
 //
@@ -142,17 +145,17 @@ module simple_gpio(
       end
     else if (wb_wr)
        if ( adr_i )
-         ctrl <= #1 dat_i[io-1:0];
-       else
          line <= #1 dat_i[io-1:0];
+       else
+         ctrl <= #1 dat_i[io-1:0];
 
 
   reg [7:0] dat_o;
   always @(posedge clk_i)
     if ( adr_i )
-      dat_o <= #1 { {{8-io}{1'b0}}, ctrl};
-    else
       dat_o <= #1 { {{8-io}{1'b0}}, llgpio};
+    else
+      dat_o <= #1 { {{8-io}{1'b0}}, ctrl};
 
   reg ack_o;
   always @(posedge clk_i or negedge rst_i)
